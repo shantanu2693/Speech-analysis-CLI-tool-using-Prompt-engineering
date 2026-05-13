@@ -21,7 +21,7 @@ class foreign_policy_analysis(Pydantic.BaseModel):
 class tone_analysis(Pydantic.BaseModel):
     tone: Optional[str] = Field(None, description="The tone of the speech (e.g., 'positive', 'negative', 'neutral').")  
 
-class ambiguity_and_impact_assessment(Pydantic.BaseModel):
+class ambiguity_assessment(Pydantic.BaseModel):
     ambiguity_level: Optional[str] = Field(None, description="The level of ambiguity in the speech (e.g., 'low', 'medium', 'high')")
 
 class consequences (Pydantic.BaseModel):
@@ -39,15 +39,26 @@ class Speech(Pydantic.BaseModel):
     domain: Optional[str] = Field(None, description="The domain or context of the speech (e.g., 'political', 'economic', 'social').")
 
 class Speech_analysis(Pydantic.BaseModel):
-    context: Optional[context] = Field(None, description="The context of the speech.")
-    themes: Optional[list[theme]] = Field(None, description="The main themes of the speech.")
-    foreign_policy_analysis: Optional[foreign_policy_analysis] = Field(None, description="The analysis of the speaker's foreign policy stance.")
-    tone_analysis: Optional[tone_analysis] = Field(None, description="The analysis of the tone of the speech.")
-    ambiguity_and_impact_assessment: Optional[ambiguity_and_impact_assessment] = Field(None, description="The assessment of ambiguity and potential impact of the speech.")
-    consequences: Optional[consequences] = Field(None, description="The potential consequences of the speech.")
-    media_reaction: Optional[media_reaction] = Field(None, description="The potential media reaction to the speech.")
+    #Main class for the structured output of the speech analysis:
+    context: list[context] = Field(None, description="The context of the speech.")
+    themes: list[theme] = Field(None, description="The main themes of the speech.")
+    foreign_policy_analysis: [foreign_policy_analysis] = Field(None, description="The analysis of the speaker's foreign policy stance.")
+    tone_analysis: [tone_analysis] = Field(None, description="The analysis of the tone of the speech.")
+    ambiguity_assessment: [ambiguity_assessment] = Field(None, description="The assessment of ambiguity in the speech.")
+    consequences: [consequences] = Field(None, description="The potential consequences of the speech.")
+    media_reaction: [media_reaction] = Field(None, description="The potential media reaction to the speech.")
 
 # Tool to analyze speeches using Gemini API:
+
+def get_speaker_recent_speeches(speaker_name: str) -> list[str]:
+    # This function would ideally fetch recent speeches of the speaker from a database or API.
+    # For demonstration purposes, we will return a hardcoded list of speeches.
+    return [
+        "Speech 1 transcript...",
+        "Speech 2 transcript...",
+        "Speech 3 transcript..."
+    ]
+
 
 # main function to analyze the speech:
 
