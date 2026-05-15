@@ -59,7 +59,46 @@ def get_speaker_recent_speeches(speaker_name: str) -> list[str]:
         "Speech 3 transcript..."
     ]
 
+def count_mentions (speech: str, keywords: list[str]) -> dict[str, int]:
+    # This function counts the mentions of specific keywords in the speech.
+    mentions = {keyword: speech.lower().count(keyword.lower()) for keyword in keywords}
+    return mentions
+
+def context_around (phrase: str, speech: str, window_size: int = 5) -> list[str]:
+    # This function extracts the context around a specific phrase in the speech.
+    words = speech.split()
+    contexts = []
+    for i in range(len(words)):
+        if words[i].lower() == phrase.lower():
+            start = max(0, i - window_size)
+            end = min(len(words), i + window_size + 1)
+            contexts.append(" ".join(words[start:end]))
+    return contexts
+
+def lookup_historical_references(speech: str) -> list[str]:
+    # This function would ideally look up historical references in the speech using a knowledge base or API.
+    # For demonstration purposes, we will return a hardcoded list of historical references.
+    return [
+        "Historical reference 1",
+        "Historical reference 2",
+        "Historical reference 3"
+    ]
+
+def get_speaker_biography(speaker_name: str) -> str:
+    # This function would ideally fetch the biography of the speaker from a database or API.
+    # For demonstration purposes, we will return a hardcoded biography.
+    return f"{speaker_name} is a prominent political figure known for their influential speeches and policies."
+
+def get_speaker_recent_speeches(speaker_name: str) -> list[str]:
+    # This function would ideally fetch recent speeches of the speaker from a database or API.
+    # For demonstration purposes, we will return a hardcoded list of speeches.
+    return [
+        "Speech 1 transcript...",
+        "Speech 2 transcript...",
+        "Speech 3 transcript..."
+    ]
 
 # main function to analyze the speech:
+
 
 # calling main:
