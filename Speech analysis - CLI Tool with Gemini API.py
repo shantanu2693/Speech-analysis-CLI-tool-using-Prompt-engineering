@@ -1,10 +1,10 @@
 from dataclasses import Field
 import sys
 from typing import Optional
-
-import urllib
+import requests
 import Pydantic
 from google import genai
+from google.genai import types
 import argparse
 import os
 
@@ -112,7 +112,11 @@ DISCIPLINE:
 2. Write what might you be wrong about? If you are not sure about something, say so.
 """
 
-# main function to analyze the speech:
+# Model
+
+MODEL = "gemini-2.0-pro"
+
+# Main function to analyze the speech:
 
 def main():
     parser = argparse.ArgumentParser(description="Analyze a head of state speech using Gemini API.")
@@ -121,7 +125,7 @@ def main():
     args = parser.parse_args()
 
     if args.url:
-        speech = urllib.request.urlopen(args.url).read().decode("utf-8")
+        speech = requests.get(args.url).text
     elif args.file:
         speech = open(args.file).read()
     else:
@@ -131,5 +135,20 @@ def main():
         print("No speech provided.")
         return
     
+    #Intialize Gemini API client:
+    client = genai.Client()
+    response = client.models.generate_content(
+        model=MODEL,
+        contents = PROMPT + "\n\n" + speech
+        config = types.GenerateContentConfig(
+            response_mime_type="application/json",
+            resposne_schema=Speech_analysis.schema_json())
+        tools = [count_mentions, context_around, lookup_historical_references, get_speaker_biography, get_speaker_recent_speeches]
+    )
 
-# calling main:
+    print(response.text)
+
+# Calling main:
+
+if __name__ == "__main__":
+    main()
