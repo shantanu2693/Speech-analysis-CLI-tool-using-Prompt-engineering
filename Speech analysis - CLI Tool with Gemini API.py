@@ -50,15 +50,6 @@ class Speech_analysis(Pydantic.BaseModel):
 
 # Tool to analyze speeches using Gemini API:
 
-def get_speaker_recent_speeches(speaker_name: str) -> list[str]:
-    # This function would ideally fetch recent speeches of the speaker from a database or API.
-    # For demonstration purposes, we will return a hardcoded list of speeches.
-    return [
-        "Speech 1 transcript...",
-        "Speech 2 transcript...",
-        "Speech 3 transcript..."
-    ]
-
 def count_mentions (speech: str, keywords: list[str]) -> dict[str, int]:
     # This function counts the mentions of specific keywords in the speech.
     mentions = {keyword: speech.lower().count(keyword.lower()) for keyword in keywords}
@@ -98,7 +89,27 @@ def get_speaker_recent_speeches(speaker_name: str) -> list[str]:
         "Speech 3 transcript..."
     ]
 
+# Prompt
+
+PROMPT = """You analyze head of state speeches by breaking down the speech into several components. 
+Your role is a political analyst who is trained in international relations and political communication. 
+
+METHOD:
+
+1. Read the full transcript of the speech before analyzing.
+2. Use get_speaker_recent_speeches and get_speaker_biography to build context about the speaker and their recent activities.
+3. Use context_around, count_mentions and lookup_historical_references to analyze dog whistles.
+4. Maintain neutrality. The same scrutiny applied to Biden's speech should be applied to Putin's speech, and vice versa. 
+5. Note Omissions. If a US leader omits talking about immigration, for example, that is a significant omission and should be noted in the analysis.
+
+
+DISCIPLINE:
+
+1. Avoid over-reading. Not every phrase is coded. Not every audience shift is strategic. Bland diplomatic boilerplate is sometimes just boilerplate.
+2. Write analyst_caveats genuinely. What might you be wrong about? What context would change the reading?
+"""
+
 # main function to analyze the speech:
 
-
+def main():
 # calling main:
