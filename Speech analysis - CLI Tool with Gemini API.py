@@ -1,5 +1,8 @@
 from dataclasses import Field
+import sys
 from typing import Optional
+
+import urllib
 import Pydantic
 from google import genai
 import argparse
@@ -112,4 +115,21 @@ DISCIPLINE:
 # main function to analyze the speech:
 
 def main():
+    parser = argparse.ArgumentParser(description="Analyze a head of state speech using Gemini API.")
+    parser.add_argument("file",nargs="?", help="Path to the text file containing the speech transcript.")
+    parser.add_argument("--url", help="URL of the speech transcript (optional).")
+    args = parser.parse_args()
+
+    if args.url:
+        speech = urllib.request.urlopen(args.url).read().decode("utf-8")
+    elif args.file:
+        speech = open(args.file).read()
+    else:
+        speech = sys.stdin.read()
+
+    if not speech.strip():
+        print("No speech provided.")
+        return
+    
+
 # calling main:
