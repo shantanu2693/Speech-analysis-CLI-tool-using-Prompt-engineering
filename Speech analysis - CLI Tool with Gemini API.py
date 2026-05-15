@@ -139,10 +139,10 @@ def main():
     client = genai.Client()
     response = client.models.generate_content(
         model=MODEL,
-        contents = PROMPT + "\n\n" + speech
+        contents = PROMPT + "\n\n" + speech,
         config = types.GenerateContentConfig(
             response_mime_type="application/json",
-            resposne_schema=Speech_analysis.schema_json())
+            resposne_schema=Speech_analysis.schema_json()),
         tools = [count_mentions, context_around, lookup_historical_references, get_speaker_biography, get_speaker_recent_speeches]
     )
 
