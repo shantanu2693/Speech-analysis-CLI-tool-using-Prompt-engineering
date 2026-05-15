@@ -105,8 +105,8 @@ METHOD:
 
 DISCIPLINE:
 
-1. Avoid over-reading. Not every phrase is coded. Not every audience shift is strategic. Bland diplomatic boilerplate is sometimes just boilerplate.
-2. Write analyst_caveats genuinely. What might you be wrong about? What context would change the reading?
+1. Avoid over-reading. Bland diplomatic boilerplate may be ignored.
+2. Write what might you be wrong about? If you are not sure about something, say so.
 """
 
 # main function to analyze the speech:
