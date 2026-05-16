@@ -1,55 +1,55 @@
-from dataclasses import Field
 import sys
 from typing import Optional
 import requests
-import Pydantic
+import pydantic
+from pydantic import BaseModel, Field
 from google import genai
 from google.genai import types
 import argparse
 import os
 
-# Pydantic models for structured output:
+# pydantic models for structured output:
 
-class context(Pydantic.BaseModel):
+class SpeechContext(pydantic.BaseModel):
     domestic_context: Optional[str] = Field(None, description="The domestic context of the speech (e.g., 'election campaign', 'policy announcement').")
     international_context: Optional[str] = Field(None, description="The international context of the speech (e.g., 'UN General Assembly', 'bilateral meeting').")
 
-class theme(Pydantic.BaseModel):
+class Theme(pydantic.BaseModel):
     name: Optional[str] = Field(None, description="The name of the theme.")
     description: Optional[str] = Field(None, description="A brief description of the theme.")
 
-class foreign_policy_analysis(Pydantic.BaseModel):
+class ForeignPolicyAnalysis(pydantic.BaseModel):
     stance: Optional[str] = Field(None, description="The foreign policy stance of the speaker (e.g., 'pro-Western', 'pro-Russian', 'neutral', 'none')")
 
-class tone_analysis(Pydantic.BaseModel):
+class ToneAnalysis(pydantic.BaseModel):
     tone: Optional[str] = Field(None, description="The tone of the speech (e.g., 'positive', 'negative', 'neutral').")  
 
-class ambiguity_assessment(Pydantic.BaseModel):
+class AmbiguityAssessment(pydantic.BaseModel):
     ambiguity_level: Optional[str] = Field(None, description="The level of ambiguity in the speech (e.g., 'low', 'medium', 'high')")
 
-class consequences (Pydantic.BaseModel):
+class Consequences(pydantic.BaseModel):
     long_term_consequences: Optional[str] = Field(None, description="The potential long-term consequences of the speech (e.g., 'increased tensions', 'improved relations', 'economic impact')")
     short_term_consequences: Optional[str] = Field(None, description="The potential short-term consequences of the speech (e.g., 'immediate diplomatic response', 'market reaction', 'public opinion shift')")
 
-class media_reaction(Pydantic.BaseModel):
+class MediaReaction(pydantic.BaseModel):
     media_reaction: Optional[str] = Field(None, description="The potential media reaction to the speech (e.g., 'positive coverage', 'negative coverage', 'mixed coverage')")
 
-class Speech(Pydantic.BaseModel):
+class Speech(pydantic.BaseModel):
     #Basic Speech Information:
     transcript: str = Field(..., description="The transcript of the speech to be analyzed.")
     language: str = Field(..., description="The language of the speech (e.g., 'en' for English).")
     audience: Optional[str] = Field(None, description="The intended audience of the speech (e.g., 'general public', 'specific group', 'international community')")
     domain: Optional[str] = Field(None, description="The domain or context of the speech (e.g., 'political', 'economic', 'social').")
 
-class Speech_analysis(Pydantic.BaseModel):
+class SpeechAnalysis(pydantic.BaseModel):
     #Main class for the structured output of the speech analysis:
-    context: list[context] = Field(None, description="The context of the speech.")
-    themes: list[theme] = Field(None, description="The main themes of the speech.")
-    foreign_policy_analysis: [foreign_policy_analysis] = Field(None, description="The analysis of the speaker's foreign policy stance.")
-    tone_analysis: [tone_analysis] = Field(None, description="The analysis of the tone of the speech.")
-    ambiguity_assessment: [ambiguity_assessment] = Field(None, description="The assessment of ambiguity in the speech.")
-    consequences: [consequences] = Field(None, description="The potential consequences of the speech.")
-    media_reaction: [media_reaction] = Field(None, description="The potential media reaction to the speech.")
+    speech_context: Optional[list[SpeechContext]] = Field(None, description="The context of the speech.")
+    themes: Optional[list[Theme]] = Field(None, description="The main themes of the speech.")
+    foreign_policy_analysis: Optional[list[ForeignPolicyAnalysis]] = Field(None, description="The analysis of the speaker's foreign policy stance.")
+    tone_analysis: Optional[list[ToneAnalysis]] = Field(None, description="The analysis of the tone of the speech.")
+    ambiguity_assessment: Optional[list[AmbiguityAssessment]] = Field(None, description="The assessment of ambiguity in the speech.")
+    consequences: Optional[list[Consequences]] = Field(None, description="The potential consequences of the speech.")
+    media_reaction: Optional[list[MediaReaction]] = Field(None, description="The potential media reaction to the speech.")
 
 # Tool to analyze speeches using Gemini API:
 
@@ -114,20 +114,27 @@ DISCIPLINE:
 
 # Model
 
-MODEL = "gemini-2.0-pro"
+MODEL = "gemini-3-flash-preview"
 
 # Main function to analyze the speech:
 
 def main():
     parser = argparse.ArgumentParser(description="Analyze a head of state speech using Gemini API.")
-    parser.add_argument("file",nargs="?", help="Path to the text file containing the speech transcript.")
+    parser.add_argument(
+        "file_or_text",
+        nargs="*",
+        help="Path to the speech text file, or raw speech text tokens passed directly on the command line.")
     parser.add_argument("--url", help="URL of the speech transcript (optional).")
     args = parser.parse_args()
 
     if args.url:
         speech = requests.get(args.url).text
-    elif args.file:
-        speech = open(args.file).read()
+    elif args.file_or_text:
+        if len(args.file_or_text) == 1 and os.path.exists(args.file_or_text[0]):
+            with open(args.file_or_text[0], 'r') as f:
+                speech = f.read()
+        else:
+            speech = " ".join(args.file_or_text)
     else:
         speech = sys.stdin.read()
 
@@ -135,15 +142,15 @@ def main():
         print("No speech provided.")
         return
     
-    #Intialize Gemini API client:
+    # Initialize Gemini API client:
     client = genai.Client()
     response = client.models.generate_content(
         model=MODEL,
-        contents = PROMPT + "\n\n" + speech,
-        config = types.GenerateContentConfig(
+        contents=PROMPT + "\n\n" + speech,
+        config=types.GenerateContentConfig(
             response_mime_type="application/json",
-            resposne_schema=Speech_analysis.schema_json()),
-        tools = [count_mentions, context_around, lookup_historical_references, get_speaker_biography, get_speaker_recent_speeches]
+            response_schema=SpeechAnalysis,
+        ),
     )
 
     print(response.text)
