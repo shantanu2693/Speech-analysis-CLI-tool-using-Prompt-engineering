@@ -19,20 +19,19 @@ class Theme(pydantic.BaseModel):
     description: Optional[str] = Field(None, description="A brief description of the theme.")
 
 class ForeignPolicyAnalysis(pydantic.BaseModel):
-    stance: Optional[str] = Field(None, description="The foreign policy stance of the speaker (e.g., 'pro-Western', 'pro-Russian', 'neutral', 'none')")
+    stance: Optional[str] = Field(None, description="The foreign policy stance of the speaker")
 
 class ToneAnalysis(pydantic.BaseModel):
-    tone: Optional[str] = Field(None, description="The tone of the speech (e.g., 'positive', 'negative', 'neutral').")  
+    tone: Optional[str] = Field(None, description="The tone of the speech")  
 
 class AmbiguityAssessment(pydantic.BaseModel):
-    ambiguity_level: Optional[str] = Field(None, description="The level of ambiguity in the speech (e.g., 'low', 'medium', 'high')")
+    ambiguity_level: Optional[str] = Field(None, description="The level of ambiguity in the speech")
 
 class Consequences(pydantic.BaseModel):
-    long_term_consequences: Optional[str] = Field(None, description="The potential long-term consequences of the speech (e.g., 'increased tensions', 'improved relations', 'economic impact')")
-    short_term_consequences: Optional[str] = Field(None, description="The potential short-term consequences of the speech (e.g., 'immediate diplomatic response', 'market reaction', 'public opinion shift')")
-
+    long_term_consequences: Optional[str] = Field(None, description="The potential long-term consequences of the speech")
+    short_term_consequences: Optional[str] = Field(None, description="The potential short-term consequences of the speech")
 class MediaReaction(pydantic.BaseModel):
-    media_reaction: Optional[str] = Field(None, description="The potential media reaction to the speech (e.g., 'positive coverage', 'negative coverage', 'mixed coverage')")
+    media_reaction: Optional[str] = Field(None, description="The potential media reaction to the speech")
 
 class Speech(pydantic.BaseModel):
     #Basic Speech Information:
@@ -43,13 +42,13 @@ class Speech(pydantic.BaseModel):
 
 class SpeechAnalysis(pydantic.BaseModel):
     #Main class for the structured output of the speech analysis:
-    speech_context: Optional[list[SpeechContext]] = Field(None, description="The context of the speech.")
+    speech_context: Optional[SpeechContext] = Field(None, description="The context of the speech.")
     themes: Optional[list[Theme]] = Field(None, description="The main themes of the speech.")
-    foreign_policy_analysis: Optional[list[ForeignPolicyAnalysis]] = Field(None, description="The analysis of the speaker's foreign policy stance.")
-    tone_analysis: Optional[list[ToneAnalysis]] = Field(None, description="The analysis of the tone of the speech.")
-    ambiguity_assessment: Optional[list[AmbiguityAssessment]] = Field(None, description="The assessment of ambiguity in the speech.")
-    consequences: Optional[list[Consequences]] = Field(None, description="The potential consequences of the speech.")
-    media_reaction: Optional[list[MediaReaction]] = Field(None, description="The potential media reaction to the speech.")
+    foreign_policy_analysis: Optional[ForeignPolicyAnalysis] = Field(None, description="The analysis of the speaker's foreign policy stance.")
+    tone_analysis: Optional[ToneAnalysis] = Field(None, description="The analysis of the tone of the speech.")
+    ambiguity_assessment: Optional[AmbiguityAssessment] = Field(None, description="The assessment of ambiguity in the speech.")
+    consequences: Optional[Consequences] = Field(None, description="The potential consequences of the speech.")
+    media_reaction: Optional[MediaReaction] = Field(None, description="The potential media reaction to the speech.")
 
 # Tool to analyze speeches using Gemini API:
 
@@ -119,24 +118,8 @@ MODEL = "gemini-3-flash-preview"
 # Main function to analyze the speech:
 
 def main():
-    parser = argparse.ArgumentParser(description="Analyze a head of state speech using Gemini API.")
-    parser.add_argument(
-        "file_or_text",
-        nargs="*",
-        help="Path to the speech text file, or raw speech text tokens passed directly on the command line.")
-    parser.add_argument("--url", help="URL of the speech transcript (optional).")
-    args = parser.parse_args()
-
-    if args.url:
-        speech = requests.get(args.url).text
-    elif args.file_or_text:
-        if len(args.file_or_text) == 1 and os.path.exists(args.file_or_text[0]):
-            with open(args.file_or_text[0], 'r') as f:
-                speech = f.read()
-        else:
-            speech = " ".join(args.file_or_text)
-    else:
-        speech = sys.stdin.read()
+    with open("Speech.txt","r") as f:
+        speech = f.read()
 
     if not speech.strip():
         print("No speech provided.")

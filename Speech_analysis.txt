@@ -1,0 +1,36 @@
+{
+  "speech_context": {
+    "domestic_context": "The speaker is likely attempting to project a statesmanlike image of stability and moral leadership to a domestic audience, potentially as a counter-narrative to internal populist or isolationist pressures.",
+    "international_context": "A high-level multilateral summit, such as the United Nations General Assembly or a global governance forum, focused on emerging technologies and sustainable development."
+  },
+  "themes": [
+    {
+      "name": "Liberal Multilateralism",
+      "description": "A call for renewed cooperation and the rejection of isolationism in favor of collective global action."
+    },
+    {
+      "name": "Technological Ethics",
+      "description": "An emphasis on framing AI and digital innovation within the context of human rights and human dignity."
+    },
+    {
+      "name": "Moral vs. Economic Value",
+      "description": "The assertion that global leadership should be defined by ethical responsibility rather than just economic power."
+    }
+  ],
+  "foreign_policy_analysis": {
+    "stance": "The speaker advocates for a liberal internationalist foreign policy, emphasizing the role of international norms, human rights, and 'bridges' over unilateralism or nationalist protectionism."
+  },
+  "tone_analysis": {
+    "tone": "Aspirational, idealistic, and urgent. The language is designed to inspire collective resolve through moral imperatives."
+  },
+  "ambiguity_assessment": {
+    "ambiguity_level": "High. The speech utilizes significant diplomatic boilerplate. It avoids naming specific adversaries, specific regional conflicts (e.g., Ukraine or Gaza), or proposing a concrete mechanism for the 'tangible action' it demands."
+  },
+  "consequences": {
+    "long_term_consequences": "If followed by specific regulatory proposals, this could signal the start of a new international consensus on AI governance; if not, it will be viewed as empty rhetoric that failed to address hardening geopolitical divisions.",
+    "short_term_consequences": "Positive diplomatic reception from international organizations and liberal allies, though it may be ignored by domestic critics seeking specific solutions to economic or border issues."
+  },
+  "media_reaction": {
+    "media_reaction": "Internationalist outlets will likely praise the 'visionary' focus on AI and ethics, while realist and nationalist commentators may criticize the omission of specific security threats and the reliance on 'moral currency' over hard power."
+  }
+}
