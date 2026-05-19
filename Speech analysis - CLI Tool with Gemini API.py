@@ -127,9 +127,17 @@ def main():
     
     # Initialize Gemini API client:
     client = genai.Client()
-    response = client.models.generate_content(
+    tools_reasoning_response = client.models.generate_content(
         model=MODEL,
         contents=PROMPT + "\n\n" + speech,
+        config=types.GenerateContentConfig(
+            tools=[count_mentions, context_around, lookup_historical_references, get_speaker_biography, get_speaker_recent_speeches],
+        ),
+    )
+
+    final_structured_response = client.models.generate_content(
+        model=MODEL,
+        contents="Convert this analysis into the required JSON structure:\n\n" + tools_reasoning_response.text,
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=SpeechAnalysis,
@@ -137,7 +145,7 @@ def main():
     )
 
     with open ("Speech_analysis.txt","w") as f:
-        f.write(response.text)
+        f.write(final_structured_response.text)
     print ("Analysis written to Speech_analysis.txt")
 
 # Calling main:
