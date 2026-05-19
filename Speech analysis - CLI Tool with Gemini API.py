@@ -136,7 +136,9 @@ def main():
         ),
     )
 
-    print (response.text)
+    with open ("Speech_analysis.txt","w") as f:
+        f.write(response.text)
+    print ("Analysis written to Speech_analysis.txt")
 
 # Calling main:
 
